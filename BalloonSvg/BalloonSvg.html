@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<style>
+  svg {border-style:solid;}
+</style>
+
+<body>
+
+<svg id="svg" xmlns="http://www.w3.org/2000/svg" version="1.1" width="500" height="350">
+
+<!--<circle cx="100" cy="100" r="25" stroke="blue" stroke-width="2"  fill="green"/>
+line x1="100" y1="125" x2="100" y2="175" style="stroke:rgb(0,255,0);strike-width:2"/!-->
+
+</svg>
+
+<p>
+<button type="button" id="balloon">New Balloon!</button>
+<button type="button" id="float">Float...</button>
+<button type="button" id="up">Up, up, and away!</button>
+<button type="button" id="freeze">And...FREEZE.</button>
+<button type="button" id="multiply">99 red balloons (C)</button>
+</p>
+Popped: <div id="balloonCount">0</div> balloons!
+
+
+<script src="jquery.js"></script>
+
+<script>
+
+var svgns = "http://www.w3.org/2000/svg";
+var balloonCount = 0;
+
+var colors = ["blue", "green", "red", "orange", "indigo", "yellow"];
+
+var balloon = function() {
+  var shape = document.createElementNS(svgns, "circle");
+  shape.setAttributeNS(null, "cx", Math.floor(Math.random()*450) + 25);
+  shape.setAttributeNS(null, "cy", Math.floor(Math.random()*350));
+  shape.setAttributeNS(null, "r", Math.floor(Math.random()*20));
+  shape.setAttributeNS(null, "stroke", colors[Math.floor(Math.random()*colors.length)]);
+  shape.setAttributeNS(null, "stroke-width", 2);
+  shape.setAttributeNS(null, "fill", colors[Math.floor(Math.random()*colors.length)]);
+  $("#svg").append(shape);
+  console.log(shape);
+  $(shape).click(enlarge);
+}
+
+var balloonM = function() {
+  var shape = document.createElementNS(svgns, "circle");
+  shape.setAttributeNS(null, "cx", Math.floor(Math.random()*450) + 25);
+  shape.setAttributeNS(null, "cy", Math.floor(Math.random()*350));
+  shape.setAttributeNS(null, "r", Math.floor(Math.random()*20));
+  shape.setAttributeNS(null, "stroke", "black");
+  shape.setAttributeNS(null, "stroke-width", 2);
+  shape.setAttributeNS(null, "fill", "red");
+  $("#svg").append(shape);
+  $(shape).click(enlarge);
+}
+
+
+var enlarge = function() {
+  tmp = $(this).attr("r");
+  $(this).attr("r", parseFloat(tmp) + 1);
+  if ($(this).attr("r") > 35) {
+    pop($(this));
+    balloonCount++;
+    $("#balloonCount").text(balloonCount);
+  }
+}
+
+var pop = function(x) {
+  $(x).remove();
+}
+
+var float = function() {
+  $("circle").each(function() {
+    $(this).attr("cy", parseFloat($(this).attr("cy")) - 1);
+    if ($(this).attr("cy") < -30) {
+      $(this).remove();
+    }
+  })
+} 
+
+$("circle").click(enlarge);
+$("#float").click(float);
+$("#balloon").click(balloon);
+var myevent;
+floatRate = prompt("Please set the float interval of the balloons in milliseconds. A greater number means the baloons will float slower and popping them will be easier. Set up as many balloons as you like, and let them go up as you try to pop them. For a fun challenge, click 99 red balloons (C) and compete with your friends to see who can pop the most at 1 millisecond.");
+$("#up").click(function() {
+  window.clearTimeout(myevent);
+  myevent = setInterval(float, floatRate);
+})
+$("#freeze").click(function() {
+  window.clearTimeout(myevent);
+})
+$("#multiply").click(function() {
+  for(var i=0 ; i<99; i++) {
+    balloonM();
+  }
+  balloonCount = 0;
+  $("#balloonCount").text(balloonCount);
+})
+</script>
